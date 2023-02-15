@@ -101,10 +101,33 @@ def cariler():
 
 
     def valueEntry(xpath, key):
+        try:
+            WebDriverWait(driver, 8).until(
+                    EC.presence_of_element_located((By.XPATH, xpath))      
+                )
+            button = driver.find_element(By.XPATH, xpath)
+            button.send_keys(key)
 
-        button = driver.find_element(By.XPATH, xpath)
-        button.click()
-        button.send_keys(key)
+        except UnexpectedAlertPresentException as err:
+            try:
+                print ("Hata açıklaması:\n" + err.alert_text + "\n")
+                error_time = datetime.datetime.now()
+                print (f"Başlama zamanı: {once}")
+                print (f"Hata zamanı: {error_time}")
+                print("Toplam " + str(a) + " kayit oluşturuldu.")
+                alert = driver.switch_to.alert
+                alert.dismiss()
+                time.sleep(3)
+            
+            except NoAlertPresentException:             
+                driver.refresh()
+                time.sleep(3)
+
+        except:
+
+            driver.refresh()
+            print ("\nError Occured. Refreshing the page\n")
+            time.sleep(3)
 
     value = "1"
     tc = "1111111111111"
@@ -113,25 +136,11 @@ def cariler():
     tc_path = '//*[@id="tax_number"]'
     vergi_dairesi_path = '//*[@id="tax_office"]'
     adress_path = '//*[@id="address"]'
-    il_path = '//*[@id="city"]'
-    ilce_path = '//*[@id="district"]'
-    ulke_path = '//*[@id="country"]'
-    postakodu_path = '//*[@id="postal_code"]'
-    eposta_path = '//*[@id="email"]'
-    telefon_path = '//*[@id="phone_number"]'
-    aciklama_path = '//*[@id="description"]'
-    parabirimi_path = '//*[@id="currency_code"]'
-    adi_path = '//*[@id="person_name"]'
-    soyadi_path = '//*[@id="person_surname"]'
-    telno_path = '//*[@id="person_phone"]'
-    posta_path = '//*[@id="person_email"]'
     yenimusteri_path = '//*[@id="column-search-datatable"]/div[1]/div/div/div[1]/button'
     ana_kayit_path = '//*[@id="mainInfo-tab"]'
     adres_path = '//*[@id="addressInfo-tab"]'
-    ekbilgiler_path = '//*[@id="otherInfo-tab"]'
-    kisi_path = '//*[@id="peopleInfo-tab"]'
     kaydet_path = '//*[@id="new-customer-form"]/div[3]/button'
-    kaydetonay_xpath = '/html/body/div[8]/div/div[6]/button[1]'
+    kaydetonay_xpath = '/html/body/div/div/div[6]/button[1]'
 
     a = 0
 
@@ -149,24 +158,6 @@ def cariler():
         hatalar(adres_path)
 
         valueEntry(adress_path, value)
-        valueEntry(il_path, value)
-        valueEntry(ilce_path, value)
-        valueEntry(ulke_path, value)
-        valueEntry(postakodu_path, value)
-
-        hatalar(ekbilgiler_path)
-
-        valueEntry(eposta_path, value)
-        valueEntry(telefon_path, value)
-        valueEntry(aciklama_path, value)
-        valueEntry(parabirimi_path, value)
-
-        hatalar(kisi_path)
-
-        valueEntry(adi_path, value)
-        valueEntry(soyadi_path, value)
-        valueEntry(telno_path, value)
-        valueEntry(posta_path, value)
 
         hatalar(kaydet_path)
         hatalar(kaydetonay_xpath)
